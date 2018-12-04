@@ -27,6 +27,13 @@ public class User {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public User(String email, Colocation colocation) {
+		super();
+		this.email = email;
+		this.colocation = colocation;
+	}
+
 	public User(String email, String password, String firstname, String lastname, Colocation colocation) {
 		super();
 		this.email = email;

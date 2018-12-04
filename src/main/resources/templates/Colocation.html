@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<li><a href="profile">Mon Profil</a></li>
+	<li><a href="#">Gérer colocation</a></li>
+
+	<input type="text" name="email" th:value="${email}" />
+
+<form action="colocationadd" method="post">
+ <div class="form-group">
+	<input type="text" name="email" th:value="${email}" />
+	  
+	  <label>Nome de la colocation: </label><br/>
+	<input  style="width: 50%" type="text" name="name" /><br/>
+	<input    type="submit" value="add"/>
+	<br/>
+	</div>
+	</form>
+</body>
+</html>
