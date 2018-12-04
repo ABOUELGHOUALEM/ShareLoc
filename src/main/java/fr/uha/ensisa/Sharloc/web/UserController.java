@@ -26,7 +26,7 @@ public class UserController {
 	
 	@RequestMapping(value="/index")
 	public String index() {
-		return "hello";
+		return "Accueil";
 }
 	
 	@RequestMapping(value="/sinscrireU",method=RequestMethod.POST)
@@ -49,6 +49,15 @@ public class UserController {
 	@RequestMapping(value="/colocation")
 	public String addColocation() {
 		return "Colocation";
+}
+	@RequestMapping(value="/inscription")
+	public String addInsciption() {
+		return "hello";
+}
+	
+	@RequestMapping(value="/connexion")
+	public String addConnexion() {
+		return "Connexion";
 }
 	
 	@RequestMapping(value="/seconnecter",method=RequestMethod.POST)
