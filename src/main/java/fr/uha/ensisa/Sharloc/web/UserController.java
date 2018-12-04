@@ -42,8 +42,9 @@ public class UserController {
 		Colocation colocation = new Colocation(name);
 		colocationRespository.save(colocation);
 		userRepository.save(new User(logS,colocation));
+		
 
-		return "Colocation";
+		return "Connexion";
 	}
 	@RequestMapping(value="/colocation")
 	public String addColocation() {
