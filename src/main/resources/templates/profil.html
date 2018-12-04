@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Profil</title>
+</head>
+<body>
+
+		<form action="passchange" method="post">
+			Email : <input type="email" name="email" th:value="${session.email}"></input></br>	
+			Lastname : <input type="text" name="lastname" th:value="${session.lastname}"></input></br>
+			First name : <input type="text" name="firstname" th:value="${session.firstname}"></input></br>
+			Last Password :  <input type="password" name="password" ></input></br>
+
+		
+			New Password :  <input type="password" name="pass" />
+			<input    type="submit" value="Change Password"/>
+		</form>
+</body>
+</html>

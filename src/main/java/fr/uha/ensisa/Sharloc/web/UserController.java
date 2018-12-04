@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import fr.uha.ensisa.Sharloc.metier.Colocation;
 import fr.uha.ensisa.Sharloc.metier.User;
 
 @Controller
+@Scope("SCOPE_SESSION")
 public class UserController {
 
 	@Autowired
@@ -33,8 +35,20 @@ public class UserController {
 	public String sinscrire(Model model,String lastname,String firstname,String email,@Valid String pass) {
 
 		userRepository.save(new User(email, pass, firstname, lastname));
-
 		return "Connexion";
+	}
+	
+	@RequestMapping(value="/passchange",method=RequestMethod.POST)
+	public String changePass(String pass, String password) {
+		
+		User user = userRepository.findByEmail(logS);
+		if (user.getPassword().equals(password.toString()))
+		{
+			user.setPassword(pass);
+			userRepository.save(user);
+		}
+		System.out.println(password);
+		return "profil";
 	}
 	//colocation
 	@RequestMapping(value="/colocationadd",method=RequestMethod.POST)
@@ -42,8 +56,9 @@ public class UserController {
 		Colocation colocation = new Colocation(name);
 		colocationRespository.save(colocation);
 		userRepository.save(new User(logS,colocation));
+		
 
-		return "Colocation";
+		return "Connexion";
 	}
 	@RequestMapping(value="/colocation")
 	public String addColocation() {
@@ -62,9 +77,8 @@ public class UserController {
 	public String addConnexion() {
 		return "Connexion";
 }
-	
 	@RequestMapping(value="/seconnecter",method=RequestMethod.POST)
-	public String seconnecter(Model model,String email,String pass,HttpSession  session) {
+	public String seconnecter(Model model,String email,String pass, HttpSession session) {
 		User a=null;
 		a=userRepository.login(email, pass);
 		if(a==null){
@@ -75,37 +89,17 @@ public class UserController {
 			logS=ap;
 			System.out.println(logS);
 			model.addAttribute("email",email);
+			String firstname = a.getFirstname();
+			String lastname = a.getLastname();
+			String password = a.getPassword();	
+			session.setAttribute("firstname", firstname);
+			session.setAttribute("lastname", lastname);
+			session.setAttribute("password", password);
+			model.addAttribute("firstname",firstname);
+			model.addAttribute("lastname",lastname);
+			model.addAttribute("password",password);
 			return "Home";
 		}
 	}
 	
-	@RequestMapping(value="/changesettings",method=RequestMethod.POST)
-	public String changSettings(Model model,String email,String pass,HttpSession  session) {
-	
-		this.seconnecter(model, email, pass, session);
-		User a = userRepository.findByEmail(email);
-		String firstname = a.getFirstname();
-		String lastename = a.getLastname();
-		String password = a.getPassword();
-		model.addAttribute("firstname",firstname);
-		model.addAttribute("lastname",lastename);
-		model.addAttribute("password",password);
-		
-		return "profil";
-	}
-	
-	/*@RequestMapping(value="/profilapp")
-	public String profilapp(Model model,HttpSession  session) {
-		
-		System.out.println(logS);
-		return "profile";}
-
-	@RequestMapping(value="/profile")
-	public String profil(Model model) {
-	User a;
-	a=userRepository.findByEmail(logS);
-		model.addAttribute("email");
-		model.addAttribute("profile", a);
-		return "profile";
-	}*/
 }
