@@ -49,6 +49,10 @@ public class UserController {
 	public String addColocation() {
 		return "Colocation";
 }
+	@RequestMapping(value="/profil")
+	public String addprofil() {
+		return "profil";
+}
 	@RequestMapping(value="/inscription")
 	public String addInsciption() {
 		return "hello";
@@ -73,6 +77,21 @@ public class UserController {
 			model.addAttribute("email",email);
 			return "Home";
 		}
+	}
+	
+	@RequestMapping(value="/changesettings",method=RequestMethod.POST)
+	public String changSettings(Model model,String email,String pass,HttpSession  session) {
+	
+		this.seconnecter(model, email, pass, session);
+		User a = userRepository.findByEmail(email);
+		String firstname = a.getFirstname();
+		String lastename = a.getLastname();
+		String password = a.getPassword();
+		model.addAttribute("firstname",firstname);
+		model.addAttribute("lastname",lastename);
+		model.addAttribute("password",password);
+		
+		return "profil";
 	}
 	
 	/*@RequestMapping(value="/profilapp")
