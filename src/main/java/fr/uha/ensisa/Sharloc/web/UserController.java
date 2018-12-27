@@ -51,19 +51,7 @@ public class UserController {
 		return "profil";
 	}
 	//colocation
-	@RequestMapping(value="/colocationadd",method=RequestMethod.POST)
-	public String ajoutCol(Model model,String email,String name) {
-		Colocation colocation = new Colocation(name);
-		colocationRespository.save(colocation);
-		userRepository.save(new User(logS,colocation));
-		
-
-		return "Connexion";
-	}
-	@RequestMapping(value="/colocation")
-	public String addColocation() {
-		return "Colocation";
-}
+	
 	@RequestMapping(value="/profil")
 	public String addprofil() {
 		return "profil";
