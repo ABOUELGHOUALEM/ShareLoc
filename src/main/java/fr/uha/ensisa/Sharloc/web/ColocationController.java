@@ -6,8 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import fr.uha.ensisa.Sharloc.dao.ChatColocationRepository;
 import fr.uha.ensisa.Sharloc.dao.ColocationRepository;
 import fr.uha.ensisa.Sharloc.dao.UserRepository;
+import fr.uha.ensisa.Sharloc.metier.ChatColocation;
 import fr.uha.ensisa.Sharloc.metier.Colocation;
 import fr.uha.ensisa.Sharloc.metier.User;
 
@@ -17,6 +19,8 @@ public class ColocationController {
 	UserRepository userRepository;
 	@Autowired
 	ColocationRepository colocationRespository;
+	@Autowired
+	ChatColocationRepository chatColocationRepository;
 	
 	
 	@RequestMapping(value="/colocationadd",method=RequestMethod.POST)
@@ -41,6 +45,19 @@ public class ColocationController {
 			user.setColocation(null);
 			userRepository.save(user);
 			colocationRespository.delete(colocation);
+		return "Connexion";
+		}
+		else
+			return "Accueil";
+	}
+	
+	@RequestMapping(value="/colocationchat",method=RequestMethod.POST)
+	public String chatCol(String email,String name, String message) {
+		
+		User user = userRepository.findByEmail(email);
+		Colocation colocation = colocationRespository.findColocationByName(name);
+		if(user != null && colocation != null && user.getColocation().getName().equals(colocation.getName())) {
+			chatColocationRepository.save(new ChatColocation(colocation, user, message));
 		return "Connexion";
 		}
 		else

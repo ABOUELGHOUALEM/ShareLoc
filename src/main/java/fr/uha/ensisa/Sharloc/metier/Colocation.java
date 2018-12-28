@@ -30,5 +30,13 @@ public class Colocation {
 		this.name = name;
 	}
 
+	public int getColocation_id() {
+		return colocation_id;
+	}
+
+	public void setColocation_id(int colocation_id) {
+		this.colocation_id = colocation_id;
+	}
+
 	
 }

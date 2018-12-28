@@ -24,6 +24,7 @@ import javax.persistence.OneToOne;
 	private String title;
 	private String description;
 	private int cost; //nombre de point associé au service
+	private int vote;
 	//@OneToOne(mappedBy="achieved_id", cascade= CascadeType.ALL) 
 	//private AchievedService achievedService;
 	
@@ -81,6 +82,12 @@ import javax.persistence.OneToOne;
 	}
 	public void setCost(int cost) {
 		this.cost = cost;
+	}
+	public int getVote() {
+		return vote;
+	}
+	public void setVote(int vote) {
+		this.vote = vote;
 	}
 	
 	

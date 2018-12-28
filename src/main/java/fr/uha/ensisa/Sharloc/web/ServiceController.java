@@ -54,6 +54,28 @@ public class ServiceController {
 		else
 			return "Accueil";
 	}
+	@RequestMapping(value="/servicevote",method=RequestMethod.POST)
+	public String voteService(String email, String title, String vote) {
+		
+		Service service = serviceRepository.findServiceByTitle(title);
+		Colocation colocation = colocationRespository.findColocationByName(service.getColocation().getName());
+		User user = userRepository.findByEmail(email);
+		
+		if(service != null && user.getColocation().getName().equals(colocation.getName()) && 
+				!user.getEmail().equals(service.getUser().getEmail()) ) {
+			
+			int usersNumber = (userRepository.countUserPerColocation(colocation.getName()))-1;
+			int userPeurcentage =(int) 100/usersNumber;
+			if(vote.equals("ok") ) {
+				service.setVote(service.getVote()+userPeurcentage);
+				serviceRepository.save(service);
+			}
+		
+		return "Connexion";
+		}
+		else
+			return "Accueil";
+	}
 	
 	
 }
