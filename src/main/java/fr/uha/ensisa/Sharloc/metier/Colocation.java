@@ -2,6 +2,7 @@ package fr.uha.ensisa.Sharloc.metier;
 
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,8 +12,9 @@ public class Colocation {
 	@Id
 	@GeneratedValue
 	private int colocation_id;
+	@Column(unique = true, nullable = false)
 	private String name;
-	@OneToMany(mappedBy="email")
+	@OneToMany(mappedBy="userID")
 	private Collection<User> users;
 	public Colocation() {
 		super();
@@ -36,6 +38,14 @@ public class Colocation {
 
 	public void setColocation_id(int colocation_id) {
 		this.colocation_id = colocation_id;
+	}
+
+	public Collection<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Collection<User> users) {
+		this.users = users;
 	}
 
 	

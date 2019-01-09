@@ -1,6 +1,7 @@
 package fr.uha.ensisa.Sharloc.metier;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,19 +15,22 @@ import javax.persistence.OneToOne;
  public class Service {
 	@Id
 	@GeneratedValue
-	private int service_id;
+	private Long service_id;
 	@ManyToOne()
 	@JoinColumn(name="COLOCATION_NAME")
 	private Colocation colocation;
 	@ManyToOne
 	@JoinColumn(name="USER_NAME")
 	private User user;
+	@Column(unique = true, nullable = false)
 	private String title;
 	private String description;
 	private int cost; //nombre de point associé au service
 	private int vote;
-	//@OneToOne(mappedBy="achieved_id", cascade= CascadeType.ALL) 
-	//private AchievedService achievedService;
+	private String voter;
+	@ManyToOne()
+	@JoinColumn(name="AchievedService_id")
+	private AchievedService achievedService;
 	
 	public Service() {
 		super();
@@ -47,10 +51,10 @@ import javax.persistence.OneToOne;
 		this.description = description;
 		this.cost = cost;
 	}
-	public int getService_id() {
+	public Long getService_id() {
 		return service_id;
 	}
-	public void setService_id(int service_id) {
+	public void setService_id(Long service_id) {
 		this.service_id = service_id;
 	}
 	public Colocation getColocation() {
@@ -88,6 +92,18 @@ import javax.persistence.OneToOne;
 	}
 	public void setVote(int vote) {
 		this.vote = vote;
+	}
+	public AchievedService getAchievedService() {
+		return achievedService;
+	}
+	public void setAchievedService(AchievedService achievedService) {
+		this.achievedService = achievedService;
+	}
+	public String getVoter() {
+		return voter;
+	}
+	public void setVoter(String voter) {
+		this.voter = voter;
 	}
 	
 	

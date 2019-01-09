@@ -1,8 +1,15 @@
 package fr.uha.ensisa.Sharloc.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -14,6 +21,7 @@ import fr.uha.ensisa.Sharloc.metier.Colocation;
 import fr.uha.ensisa.Sharloc.metier.User;
 
 @Controller
+@RequestMapping("/colocation")
 public class ColocationController {
 	@Autowired
 	UserRepository userRepository;
@@ -24,45 +32,73 @@ public class ColocationController {
 	
 	
 	@RequestMapping(value="/colocationadd",method=RequestMethod.POST)
-	public String ajoutCol(String email,String name) {
-		Colocation colocation = new Colocation(name);
-		User user = userRepository.findByEmail(email);
-		if(user != null && name != null ) {
-		colocationRespository.save(colocation);
-		userRepository.save(new User(email,colocation));
-		return "Connexion";
+	public ResponseEntity<?>  ajoutCol(@RequestBody Colocation colocation) {
+		
+		User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Colocation colocation2 = colocationRespository.findColocationByName(colocation.getName());
+		
+		try {
+			if(colocation2 != null) {
+			colocation2 = colocationRespository.save(colocation2);
+			user.setColocation(colocation2);
+			userRepository.save(user);
+			return ResponseEntity.ok(colocation2);
+			}
+			else
+			{
+				colocation = colocationRespository.save(colocation);
+				user.setColocation(colocation);
+				userRepository.save(user);
+				return ResponseEntity.ok(colocation);	
+			}
+			
 		}
-		else
-			return "Accueil";
+		catch (Exception e) {
+			return ResponseEntity.ok(HttpStatus.CONFLICT);
+		}
 	}
 	
 	@RequestMapping(value="/colocationdelete",method=RequestMethod.POST)
-	public String deleteCol(String email,String name) {
+	public ResponseEntity<?>  deleteCol(@RequestBody Colocation colocatione) {
 		
-		User user = userRepository.findByEmail(email);
-		Colocation colocation = colocationRespository.findColocationByName(name);
-		if(user != null && colocation != null) {
-			user.setColocation(null);
-			userRepository.save(user);
+		User user2 =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Colocation colocation = colocationRespository.findColocationByName(colocatione.getName());
+		List<User> lUsers = userRepository.getUsersPerColocation(colocation.getName());
+		User user = userRepository.findByUsername(user2.getUsername());
+		if(user.getColocation().getColocation_id() == colocation.getColocation_id()) {
+			for(User u:lUsers) {
+				u.setColocation(null);
+				userRepository.save(user);	
+			}
 			colocationRespository.delete(colocation);
-		return "Connexion";
-		}
-		else
-			return "Accueil";
+			return ResponseEntity.ok(user);}
+		return ResponseEntity.ok(HttpStatus.NOT_FOUND);
+		
 	}
 	
 	@RequestMapping(value="/colocationchat",method=RequestMethod.POST)
-	public String chatCol(String email,String name, String message) {
+	public ResponseEntity<?>  chatCol(@RequestBody ChatColocation chatColocation) {
 		
-		User user = userRepository.findByEmail(email);
-		Colocation colocation = colocationRespository.findColocationByName(name);
-		if(user != null && colocation != null && user.getColocation().getName().equals(colocation.getName())) {
-			chatColocationRepository.save(new ChatColocation(colocation, user, message));
-		return "Connexion";
-		}
-		else
-			return "Accueil";
+		User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			ChatColocation chatColocation2 = chatColocationRepository.save(new ChatColocation(user.getColocation(), user, chatColocation.getMessage()));
+			return ResponseEntity.ok(chatColocation2);
+		
 	}
-
+	
+	@RequestMapping(value="/getchat",method=RequestMethod.GET)
+	public ResponseEntity<?>  getchat() {
+		List<ChatColocation> lChat = new ArrayList<>();
+		User user2 =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findByUsername(user2.getUsername());
+		 lChat = chatColocationRepository.getMessagePerColocation(user.getColocation().getName());
+		 //return ResponseEntity.ok(lChat);
+		 	try{
+				return ResponseEntity.ok(lChat);
+			} catch (Exception e) {
+				return ResponseEntity.ok(HttpStatus.NOT_FOUND);
+			}
+		
+		
+	}
 	
 }

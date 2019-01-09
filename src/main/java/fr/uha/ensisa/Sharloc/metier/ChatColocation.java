@@ -25,6 +25,17 @@ public class ChatColocation {
 		this.user = user;
 		this.message = message;
 	}
+	
+	public ChatColocation() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public ChatColocation(String message) {
+		super();
+		this.message = message;
+	}
+
 	public int getChat_id() {
 		return chat_id;
 	}
